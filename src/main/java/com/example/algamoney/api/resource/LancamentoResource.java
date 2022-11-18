@@ -94,7 +94,7 @@ public class LancamentoResource {
 	// Alteração de todo o registro
 	@PutMapping("/{codigo}")
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and hasAuthority('SCOPE_write')" )
-	public ResponseEntity<Lancamento> atualizar(@PathVariable Long codigo, @Valid @RequestBody Lancamento lancamento){
+	public ResponseEntity<Lancamento> atualizar(@PathVariable Long codigo, @Valid @RequestBody Lancamento lancamento) throws PessoaInexistenteOuInativaException{
 		Lancamento lancamentoSalva = lancamentoService.atualizar(codigo, lancamento);
 		return ResponseEntity.ok(lancamentoSalva);
 	}

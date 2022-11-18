@@ -22,10 +22,26 @@ public class LancamentoService {
 	@Autowired
 	private PessoaRepository pessoaRepository;
 	
-	public Lancamento atualizar(Long codigo, Lancamento lancamento) {
+	public Lancamento atualizar(Long codigo, Lancamento lancamento) throws PessoaInexistenteOuInativaException {
 		Lancamento lancamentoSalva = buscarLancamentoPeloCodigo(codigo);
+		
+		if (!lancamento.getPessoa().equals(lancamentoSalva.getPessoa())) {
+			validarPessoa(lancamento.getPessoa());
+		}
+		
 		BeanUtils.copyProperties(lancamento, lancamentoSalva, "codigo");
 		return lancamentoRepository.save(lancamentoSalva);	
+	}
+	
+	
+	private void validarPessoa(Pessoa pessoa) throws PessoaInexistenteOuInativaException {
+		
+		Optional<Pessoa> pessoaAux = pessoaRepository.findById(pessoa.getCodigo());
+		
+		if (pessoaAux == null || !pessoaAux.get().isAtivo()) {
+			throw new PessoaInexistenteOuInativaException();
+		}	
+		
 	}
 
 	public Lancamento salvar(Lancamento lancamento) throws PessoaInexistenteOuInativaException {
